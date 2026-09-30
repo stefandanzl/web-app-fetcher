@@ -31,3 +31,8 @@ task test:unit  # unit tests
 Register the built app in your OpenCloud instance by mounting
 `packages/web-app-fetcher/dist` into the server's web apps folder (see the
 repository `docker-compose.yml` for the dev setup).
+
+## Credits
+
+Project structure and build setup inspired by
+[opencloud-eu/web-app-skeleton](https://github.com/opencloud-eu/web-app-skeleton).
