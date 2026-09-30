@@ -1,0 +1,37 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Production build
+    cmds:
+      - pnpm vite build
+
+  build:w:
+    desc: Build with watch/hot-reload
+    cmds:
+      - pnpm vite build --watch --mode development
+
+  check:types:
+    desc: TypeScript type checking
+    cmds:
+      - pnpm vue-tsc --noEmit
+
+  test:unit:
+    desc: Run unit tests
+    cmds:
+      - pnpm vitest run
+
+  lint:
+    desc: Run ESLint
+    cmds:
+      - pnpm eslint 'src/**/*.{js,ts,vue}' 'tests/**/*.{js,ts,vue}' --color
+
+  format:check:
+    desc: Check formatting with Prettier
+    cmds:
+      - pnpm prettier . --check
+
+  format:write:
+    desc: Auto-fix formatting with Prettier
+    cmds:
+      - pnpm prettier . --write

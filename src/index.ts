@@ -1,0 +1,19 @@
+import { useGettext } from 'vue3-gettext'
+import translations from '../l10n/translations.json'
+import { defineWebApplication } from '@opencloud-eu/web-pkg'
+import { useExtensions } from './composables/useExtensions'
+import '@opencloud-eu/extension-sdk/tailwind.css'
+
+export default defineWebApplication({
+  setup() {
+    const { $gettext } = useGettext()
+    return {
+      appInfo: {
+        id: 'fetcher',
+        name: $gettext('Fetcher')
+      },
+      extensions: useExtensions(),
+      translations
+    }
+  }
+})
