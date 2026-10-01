@@ -1,4 +1,9 @@
-import { ActionExtension, useModals, useSpacesStore } from '@opencloud-eu/web-pkg'
+import {
+  ActionExtension,
+  ApplicationSetupOptions,
+  useModals,
+  useSpacesStore
+} from '@opencloud-eu/web-pkg'
 import { Resource, SpaceResource } from '@opencloud-eu/web-client'
 import { defaultComponentMocks, getComposableWrapper } from '@opencloud-eu/web-test-helpers'
 import { mock } from 'vitest-mock-extended'
@@ -60,16 +65,43 @@ describe('fetcher action', () => {
         }
       })
     })
+    it('hands the bridge url to the modal when configured', () => {
+      getWrapper({
+        currentFolder: mock<Resource>({ canUpload: () => true }),
+        bridgeUrl: 'https://bridge.example.com/',
+        setup: (instance) => {
+          const spy = vi.spyOn(useModals(), 'dispatchModal')
+          const action = (unref(instance)[0] as ActionExtension).action
+          action.handler()
+          expect(spy.mock.calls[0][0].customComponentAttrs().bridgeUrl).toEqual(
+            'https://bridge.example.com'
+          )
+        }
+      })
+    })
+    it('omits the bridge url when not configured (client-side fallback)', () => {
+      getWrapper({
+        currentFolder: mock<Resource>({ canUpload: () => true }),
+        setup: (instance) => {
+          const spy = vi.spyOn(useModals(), 'dispatchModal')
+          const action = (unref(instance)[0] as ActionExtension).action
+          action.handler()
+          expect(spy.mock.calls[0][0].customComponentAttrs().bridgeUrl).toBeUndefined()
+        }
+      })
+    })
   })
 })
 
 function getWrapper({
   setup,
   currentFolder,
+  bridgeUrl = '',
   publicLinkContextReady = false
 }: {
   setup: (instance: ReturnType<typeof useExtensions>) => void
   currentFolder?: Resource
+  bridgeUrl?: string
   publicLinkContextReady?: boolean
 }) {
   const mocks = { ...defaultComponentMocks() }
@@ -77,7 +109,9 @@ function getWrapper({
   return {
     wrapper: getComposableWrapper(
       () => {
-        const instance = useExtensions()
+        const instance = useExtensions(
+          mock<ApplicationSetupOptions>({ applicationConfig: { bridgeUrl } })
+        )
         setup(instance)
       },
       {

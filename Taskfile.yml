@@ -35,3 +35,21 @@ tasks:
     desc: Auto-fix formatting with Prettier
     cmds:
       - pnpm prettier . --write
+
+  bridge:build:
+    desc: Build the server-side bridge (aria2 + upload into OpenCloud)
+    dir: bridge
+    cmds:
+      - npm run build
+
+  bridge:test:
+    desc: Run the bridge unit tests
+    dir: bridge
+    cmds:
+      - npm test
+
+  bridge:dev:
+    desc: Run the bridge locally with watch mode
+    dir: bridge
+    cmds:
+      - npm run dev

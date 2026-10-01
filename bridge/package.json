@@ -1,0 +1,21 @@
+{
+  "name": "web-app-fetcher-bridge",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Server-side downloader bridge for the OpenCloud Web fetcher extension (drives aria2, uploads into OpenCloud)",
+  "license": "AGPL-3.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "node dist/main.js",
+    "dev": "tsx watch src/main.ts",
+    "test": "tsx --test \"test/*.test.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^6.0.0"
+  }
+}

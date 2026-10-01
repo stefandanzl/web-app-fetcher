@@ -5,14 +5,14 @@ import { useExtensions } from './composables/useExtensions'
 import '@opencloud-eu/extension-sdk/tailwind.css'
 
 export default defineWebApplication({
-  setup() {
+  setup(args) {
     const { $gettext } = useGettext()
     return {
       appInfo: {
         id: 'fetcher',
         name: $gettext('Fetcher')
       },
-      extensions: useExtensions(),
+      extensions: useExtensions(args),
       translations
     }
   }

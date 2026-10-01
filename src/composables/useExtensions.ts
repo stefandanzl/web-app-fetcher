@@ -1,4 +1,5 @@
 import {
+  ApplicationSetupOptions,
   Extension,
   useAuthStore,
   useModals,
@@ -9,9 +10,10 @@ import {
 import { storeToRefs } from 'pinia'
 import { useGettext } from 'vue3-gettext'
 import { computed, unref } from 'vue'
+import { useDownloadsWatcher } from './useDownloadsWatcher'
 import DownloadModal from '../components/DownloadModal.vue'
 
-export const useExtensions = () => {
+export const useExtensions = ({ applicationConfig }: ApplicationSetupOptions) => {
   const { $gettext } = useGettext()
   const authStore = useAuthStore()
   const userStore = useUserStore()
@@ -20,6 +22,12 @@ export const useExtensions = () => {
   const spacesStore = useSpacesStore()
   const { currentSpace, personalSpace } = storeToRefs(spacesStore)
   const { dispatchModal } = useModals()
+
+  // when a bridge is configured, downloads run server-side (urls + magnets);
+  // without one the modal falls back to browser-side downloads (urls only)
+  const bridgeUrl = (applicationConfig?.bridgeUrl as string)?.replace(/\/+$/, '') || ''
+  const downloadsWatcher = bridgeUrl ? useDownloadsWatcher(bridgeUrl) : null
+  downloadsWatcher?.check()
 
   const canUpload = computed(() => {
     return unref(currentFolder)?.canUpload({ user: userStore.user })
@@ -36,7 +44,9 @@ export const useExtensions = () => {
       customComponentAttrs: () => ({
         space: unref(currentSpace) ?? unref(personalSpace),
         currentPath: unref(currentFolder)?.path || '/',
-        currentFolderName: unref(currentFolder)?.name || '/'
+        currentFolderName: unref(currentFolder)?.name || '/',
+        bridgeUrl: bridgeUrl || undefined,
+        onServerDownloadStarted: () => downloadsWatcher?.check()
       })
     })
   }
