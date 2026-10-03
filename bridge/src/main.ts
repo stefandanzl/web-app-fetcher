@@ -282,6 +282,11 @@ async function main(): Promise<void> {
     }
 
     const url = new URL(request.url ?? '/', 'http://localhost')
+    if (request.method === 'GET' && url.pathname === '/health') {
+      sendJson(response, 200, { status: 'ok' })
+      return
+    }
+
     if (!url.pathname.startsWith('/api/')) {
       sendJson(response, 404, { error: 'not found' })
       return
